@@ -1,0 +1,19 @@
+SLAVE_RUNNER=/usr/bin/buildslave
+
+# NOTE: SLAVE_ENABLED has changed its behaviour in version 0.8.4. Use
+# 'true|yes|1' to enable instance and 'false|no|0' to disable. Other
+# values will be considered as syntax error.
+
+SLAVE_ENABLED[1]=1                    # 1-enabled, 0-disabled
+SLAVE_NAME[1]="openxt1"               # short name printed on start/stop
+SLAVE_USER[1]="openxt1"               # user to run slave as
+SLAVE_BASEDIR[1]="/var/lib/buildbot/slaves/openxt1"  # basedir to slave (absolute path)
+SLAVE_OPTIONS[1]=""                   # buildbot options
+SLAVE_PREFIXCMD[1]=""                 # prefix command, i.e. nice, linux32, dchroot
+
+SLAVE_ENABLED[2]=1                    # 1-enabled, 0-disabled
+SLAVE_NAME[2]="openxt2"               # short name printed on start/stop
+SLAVE_USER[2]="openxt2"               # user to run slave as
+SLAVE_BASEDIR[2]="/var/lib/buildbot/slaves/openxt2"  # basedir to slave (absolute path)
+SLAVE_OPTIONS[2]=""                   # buildbot options
+SLAVE_PREFIXCMD[2]=""                 # prefix command, i.e. nice, linux32, dchroot
