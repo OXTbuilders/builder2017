@@ -2,6 +2,10 @@
 
 BUILD_ID=$1
 BRANCH=$2
+LAYERS=$3
+OVERRIDES=$4
+ISSUE=$5
+DISTRO=$6
 
 umask 0022
 
@@ -14,12 +18,65 @@ if [ "${BRANCH}" = "None" ]; then
     BRANCH=master
 fi
 
+if [[ "$LAYERS"    = "None" ]] && \
+   [[ "$OVERRIDES" = "None" ]] && \
+   [[ "$ISSUE"     = "None" ]] && \
+   [[ "$DISTRO"    = "None" ]]; then
+    CUSTOM=0
+#    NAME_SITE="oxt"
+    echo "No override found, starting a regular build."
+else
+    CUSTOM=1
+# TODO: stable-6 still has a site name, should we set it?
+#    NAME_SITE="custom"
+    echo "Override(s) found, starting a custom build."
+fi
+
+do_overrides () {
+    for trip in $OVERRIDES; do
+	name=$(echo $trip | cut -f 1 -d ':')
+	git=$(echo $trip | cut -f 2 -d ':')
+	branch=$(echo $trip | cut -f 3 -d ':')
+
+	rm -rf /home/git/${LOCAL_USER}/$name.git
+	git clone --mirror git://$git/$name /home/git/${LOCAL_USER}/$name.git
+	# The following code will name the override $BRANCH, to match what we're building
+	if [[ $branch != "${BRANCH}" ]]; then
+	    pushd /home/git/${LOCAL_USER}/$name.git
+	    # Avoid being on a releavant branch by moving the HEAD to a tmp branch
+	    git branch tmp
+	    git symbolic-ref HEAD refs/heads/tmp
+	    # Move $BRANCH to a backup location (avoid removing it, since some branches can't be removed)
+	    #   Do not fail if the branch doesn't exist, it can happen
+	    git branch -m $BRANCH original$BRANCH || true
+	    # Create a branch named $BRANCH out of the $branch requested by the override
+	    git branch $BRANCH $branch
+	    # Make $BRANCH the head of the repository
+	    git symbolic-ref HEAD refs/heads/$BRANCH
+	    popd
+	fi
+    done
+}
+
 rm -rf /home/git/${LOCAL_USER}/*
 
 echo "Cloning all repos..."
 for repo in `/home/shared/list_repos.sh`; do
     git clone --quiet --mirror https://github.com/OpenXT/${repo} /home/git/${LOCAL_USER}/${repo}.git
-    # TODO: overrides
+    # Handle overrides
+    #   Note: It is against policy to set both $ISSUE and $OVERRIDES in the buildbot ui
+    if [[ $ISSUE != 'None' && $OVERRIDES != 'None' ]]; then
+	echo "Cannot pass both a Jira ticket and custom repository overrides to build from."
+	exit -1
+    elif [[ $ISSUE != 'None' && $OVERRIDES == 'None' ]]; then
+	OVERRIDES=$( /home/shared/build_for_issue.sh $ISSUE )
+    else
+	echo "Building using method other than Jira ticket."
+    fi
+    OFS=$IFS
+    IFS=','
+    [ "$OVERRIDES" != "None" ] && do_overrides
+    IFS=$OFS
 done
 
 rm -rf openxt
@@ -73,4 +130,8 @@ fi
 
 cd - > /dev/null
 
-scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/regular/${BRANCH}/
+if [ $CUSTOM -eq 0 ]; then
+    scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/regular/${BRANCH}/
+else
+    scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/custom/${BRANCH}/
+fi
