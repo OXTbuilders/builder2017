@@ -50,7 +50,11 @@ sed -i "s|^ALL_BUILDS_SUBDIR_NAME=|ALL_BUILDS_SUBDIR_NAME=${LOCAL_HOME}/|" cento
 sed -i "s|^DEST=|DEST=${LOCAL_HOME}/|" windows/build.sh
 # 3. stable-6 doesn't remove the dkms stuff properly in centos
 if [[ $BRANCH = stable-6* ]]; then
-    sed 's|sudo rm -rf /usr/src/\${tool}-1.0|sudo rm -rf /usr/src/${tool}-1.0 /var/lib/dkms/${tool}|'
+    sed 's|sudo rm -rf /usr/src/\${tool}-1.0|sudo rm -rf /usr/src/${tool}-1.0 /var/lib/dkms/${tool}|' centos/build.sh
+fi
+# 4. stable-6 doesn't handle build IDs?!
+if [[ $BRANCH = stable-6* ]]; then
+    sed "s#^./do_build.sh | tee build.log$#./do_build.sh ${BUILD_ID} | tee build.log#" oe/build.sh
 fi
 
 # Remove all builds in oe container before starting a new one
