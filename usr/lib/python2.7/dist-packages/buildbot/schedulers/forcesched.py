@@ -646,9 +646,31 @@ class ForceScheduler(base.BaseScheduler):
 
         changeids = map(lambda a: isinstance(a, int) and a or a.number, changeids)
 
+        # OpenXT
+        layers = []
+        for i in range(int(kwargs['num_layers'][0])):
+            if (kwargs['layer'+str(i)][0] != '') and (kwargs['lrepo'+str(i)][0] != '') and (kwargs['lbranch'+str(i)][0] != ''):
+                layer_string = kwargs['layer'+str(i)][0]+':'+kwargs['lrepo'+str(i)][0]+':'+kwargs['lbranch'+str(i)][0]
+                layers.append(layer_string)
+        properties['layers'] = ','.join(layers)
+
         real_properties = Properties()
+
+        # OpenXT
+        revdict = {}
+        urldict = {}
+        repo_overrides = ""
+
         for pname, pvalue in properties.items():
             real_properties.setProperty(pname, pvalue, "Force Build Form")
+            # OpenXT
+            if ('url' in pname) and pvalue:
+                name = pname[0:pname.find('url')]
+                urldict[name] = (name,pvalue)
+        keys = urldict.keys()
+        for key in keys:
+            repo_overrides = repo_overrides+urldict[key][0] + ':' + urldict[key][1]+','
+        real_properties.setProperty('repos', repo_overrides, "Force Build Form")
 
         defer.returnValue((real_properties, changeids, sourcestamps))
 
