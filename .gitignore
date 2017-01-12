@@ -30,6 +30,14 @@
 /var/lib/buildbot/*
 !/var/lib/buildbot/masters
 /var/lib/buildbot/masters/*
+!/var/lib/buildbot/masters/buildmaster
+/var/lib/buildbot/masters/buildmaster/*
+!/var/lib/buildbot/masters/buildmaster/openxt
+/var/lib/buildbot/masters/buildmaster/openxt/*
+!/var/lib/buildbot/masters/buildmaster/legacy
+/var/lib/buildbot/masters/buildmaster/legacy/*
+!/var/lib/buildbot/masters/buildmaster/windows
+/var/lib/buildbot/masters/buildmaster/windows/*
 !/var/lib/buildbot/slaves
 /var/lib/buildbot/slaves/*
 !/home
@@ -60,6 +68,9 @@
 !/var/lib/buildbot/slaves/*
 !/home/shared/*
 !/home/lxc/legacy-oe/rootfs/home/buildbot/legacy/*
+!/var/lib/buildbot/masters/buildmaster/openxt/500
+!/var/lib/buildbot/masters/buildmaster/legacy/300
+!/var/lib/buildbot/masters/buildmaster/windows/400
 
 # Re-ignore the files/directories we don't want
 *~
@@ -71,9 +82,6 @@ gitpoller-work*
 *.iso
 oracle*
 .htpasswd
-/var/lib/buildbot/masters/buildmaster/openxt
-/var/lib/buildbot/masters/buildmaster/legacy
-/var/lib/buildbot/masters/buildmaster/windows
 /var/lib/buildbot/slaves/openxt1/openxt/build/openxt
 /var/lib/buildbot/slaves/openxt2/openxt/build/openxt
 /home/lxc/legacy-oe/rootfs/home/buildbot/legacy/legacy/build/certs
