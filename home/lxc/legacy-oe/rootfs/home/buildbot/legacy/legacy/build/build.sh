@@ -7,12 +7,6 @@ OVERRIDES=$4
 ISSUE=$5
 DISTRO=$6
 
-# Hack, remove me when buildmaster is fixed
-LAYERS="None"
-OVERRIDES="None"
-ISSUE="None"
-DISTRO="None"
-
 do_overrides () {
     for trip in $OVERRIDES; do
         name=$(echo $trip | cut -f 1 -d ':')

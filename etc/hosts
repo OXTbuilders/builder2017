@@ -5,7 +5,7 @@
 2607:5300:0060:9478::	builder	builder
 
 172.21.152.104          windows
-172.21.152.80           legacy-oe
+172.21.152.105          legacy-oe
 
 # The following lines are desirable for IPv6 capable hosts
 #(added automatically by netbase upgrade)
