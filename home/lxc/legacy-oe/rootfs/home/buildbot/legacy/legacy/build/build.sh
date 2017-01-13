@@ -39,7 +39,7 @@ umask 0022
 if [[ "$LAYERS"    = "None" ]] && \
    [[ "$OVERRIDES" = "None" ]] && \
    [[ "$ISSUE"     = "None" ]] && \
-   [[ "$DISTRO"    = "None" ]]; then
+   ([[ "$DISTRO"   = "None" ]] || [[ "$DISTRO" = "openxt-main" ]]); then
     CUSTOM=0
     NAME_SITE="oxt"
     echo "No override found, starting a regular build."

@@ -21,7 +21,7 @@ fi
 if [[ "$LAYERS"    = "None" ]] && \
    [[ "$OVERRIDES" = "None" ]] && \
    [[ "$ISSUE"     = "None" ]] && \
-   [[ "$DISTRO"    = "None" ]]; then
+   ([[ "$DISTRO"   = "None" ]] || [[ "$DISTRO" = "openxt-main" ]]); then
     CUSTOM=0
 #    NAME_SITE="oxt"
     echo "No override found, starting a regular build."
@@ -107,10 +107,12 @@ sed -i "s|^ALL_BUILDS_SUBDIR_NAME=|ALL_BUILDS_SUBDIR_NAME=${LOCAL_HOME}/|" debia
 sed -i "s|^ALL_BUILDS_SUBDIR_NAME=|ALL_BUILDS_SUBDIR_NAME=${LOCAL_HOME}/|" centos/build.sh
 sed -i "s|^DEST=|DEST=${LOCAL_HOME}/|" windows/build.sh
 # 3. stable-6 doesn't remove the dkms stuff properly in centos
+#  TODO: fix
 if [[ $BRANCH = stable-6* ]]; then
     sed -i 's|sudo rm -rf /usr/src/\${tool}-1.0|sudo rm -rf /usr/src/${tool}-1.0 /var/lib/dkms/${tool}|' centos/build.sh
 fi
 # 4. stable-6 doesn't handle build IDs?!
+#  TODO: fix
 if [[ $BRANCH = stable-6* ]]; then
     sed -i "s#^./do_build.sh | tee build.log\$#./do_build.sh -i ${BUILD_ID} | tee build.log#" oe/build.sh
 fi
