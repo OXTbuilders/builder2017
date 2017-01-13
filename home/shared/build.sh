@@ -112,7 +112,7 @@ if [[ $BRANCH = stable-6* ]]; then
 fi
 # 4. stable-6 doesn't handle build IDs?!
 if [[ $BRANCH = stable-6* ]]; then
-    sed -i "s#^./do_build.sh | tee build.log\$#./do_build.sh ${BUILD_ID} | tee build.log#" oe/build.sh
+    sed -i "s#^./do_build.sh | tee build.log\$#./do_build.sh -i ${BUILD_ID} | tee build.log#" oe/build.sh
 fi
 
 # Remove all builds in oe container before starting a new one
