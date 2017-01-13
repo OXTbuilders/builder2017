@@ -39,7 +39,7 @@ do_overrides () {
 	branch=$(echo $trip | cut -f 3 -d ':')
 
 	rm -rf /home/git/${LOCAL_USER}/$name.git
-	git clone --mirror git://$git/$name /home/git/${LOCAL_USER}/$name.git
+	git clone --bare git://$git/$name /home/git/${LOCAL_USER}/$name.git
 	# The following code will name the override $BRANCH, to match what we're building
 	if [[ $branch != "${BRANCH}" ]]; then
 	    pushd /home/git/${LOCAL_USER}/$name.git
