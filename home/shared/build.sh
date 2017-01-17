@@ -1,5 +1,10 @@
 #!/bin/bash
 
+{
+# Making the whole script one big block.
+# That way, supposedly, it's entirely loaded in RAM at call time.
+# So now modifying the script while it's in use shouldn't break anything
+
 BUILD_ID=$1
 BRANCH=$2
 LAYERS=$3
@@ -138,3 +143,5 @@ if [ $CUSTOM -eq 0 ]; then
 else
     scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/custom/${BRANCH}/
 fi
+
+}
