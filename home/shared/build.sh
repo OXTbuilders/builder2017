@@ -117,9 +117,10 @@ if [[ $BRANCH = stable-6* ]]; then
     sed -i 's|sudo rm -rf /usr/src/\${tool}-1.0|sudo rm -rf /usr/src/${tool}-1.0 /var/lib/dkms/${tool}|' centos/build.sh
 fi
 # 4. stable-6 doesn't handle build IDs?!
+# 4bis. stable-6 doesn't build all steps by default...
 #  TODO: fix
 if [[ $BRANCH = stable-6* ]]; then
-    sed -i "s#^./do_build.sh | tee build.log\$#./do_build.sh -i ${BUILD_ID} | tee build.log#" oe/build.sh
+    sed -i "s#^./do_build.sh | tee build.log\$#{\n ./do_build.sh -i ${BUILD_ID}\n ./do_build.sh -i ${BUILD_ID} -s xctools,ship,extra_pkgs,packages_tree\n} | tee build.log#" oe/build.sh
 fi
 
 # Remove all builds in oe container before starting a new one
@@ -144,4 +145,5 @@ else
     scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/custom/${BRANCH}/
 fi
 
+exit
 }
