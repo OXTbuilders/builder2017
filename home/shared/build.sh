@@ -27,11 +27,11 @@ if [[ "$LAYERS"    = "None" ]] && \
    [[ "$OVERRIDES" = "None" ]] && \
    [[ "$ISSUE"     = "None" ]] && \
    ([[ "$DISTRO"   = "None" ]] || [[ "$DISTRO" = "openxt-main" ]]); then
-    CUSTOM=0
+    CUSTOM="regular"
 #    NAME_SITE="oxt"
     echo "No override found, starting a regular build."
 else
-    CUSTOM=1
+    CUSTOM="custom"
 # TODO: stable-6 still has a site name, should we set it?
 #    NAME_SITE="custom"
     echo "Override(s) found, starting a custom build."
@@ -114,13 +114,44 @@ sed -i "s|^DEST=|DEST=${LOCAL_HOME}/|" windows/build.sh
 # 3. stable-6 doesn't remove the dkms stuff properly in centos
 #  TODO: fix
 if [[ $BRANCH = stable-6* ]]; then
-    sed -i 's|sudo rm -rf /usr/src/\${tool}-1.0|sudo rm -rf /usr/src/${tool}-1.0 /var/lib/dkms/${tool}|' centos/build.sh
+    sed -i -e '/sudo rm -rf \/usr\/src\/\${tool}-1.0/r /dev/stdin' centos/build.sh <<EOF
+sudo rm -rf /var/lib/dkms/${tool}
+EOF
 fi
 # 4. stable-6 doesn't handle build IDs?!
 # 4bis. stable-6 doesn't build all steps by default...
+# 4ter. fail on failure
 #  TODO: fix
 if [[ $BRANCH = stable-6* ]]; then
-    sed -i "s#^./do_build.sh | tee build.log\$#{\n ./do_build.sh -i ${BUILD_ID}\n ./do_build.sh -i ${BUILD_ID} -s xctools,ship,extra_pkgs,packages_tree\n} | tee build.log#" oe/build.sh
+    sed -i -e "/.\/do_build.sh/r /dev/stdin" oe/build.sh <<'EOF'
+# The return value of `do_build.sh` got hidden by `tee`. Bring it back.
+ret=${PIPESTATUS[0]}
+( exit $ret )
+
+./do_build.sh -s xctools,ship,extra_pkgs,packages_tree | tee -a build.log
+ret=${PIPESTATUS[0]}
+( exit $ret )
+EOF
+    sed -i -e "s|^./do_build.sh|./do_build.sh -i ${BUILD_ID}|" oe/build.sh
+fi
+# 5. fix opkg config
+#  TODO: replace the IP with a DNS name once we have one
+if [[ $BRANCH = stable-6* ]]; then
+    # Hack: there's only one EOF heredoc in oe/build.sh, which appends to .config
+    sed -i "s|^EOF$|XENCLIENT_PACKAGE_FEED_URI=\"http://144.217.69.51/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/packages/ipk\"\nEOF|" oe/build.sh
+else
+    sed -i "s|^XENCLIENT_PACKAGE_FEED_URI=.*$|XENCLIENT_PACKAGE_FEED_URI=\"http://144.217.69.51/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/openxt-dev-${BUILD_ID}-${BRANCH}/packages/ipk\"|" oe/build.sh
+fi
+# 6. stable-6: Bring in Windows tools and fix .config
+if [[ $BRANCH = stable-6* ]]; then
+    sed -i -e "/^cd openxt$/r /dev/stdin" oe/build.sh <<'EOF'
+
+mkdir wintools
+rsync -r buildbot@172.21.152.1:/home/builds/win/$BRANCH/ wintools/
+WINTOOLS="`pwd`/wintools"
+WINTOOLS_ID="`grep -o '[0-9]*' wintools/BUILD_ID`"
+EOF
+    sed -i -e 's|^EOF$|WIN_BUILD_OUTPUT=\"$WINTOOLS\"\nXC_TOOLS_BUILD=$WINTOOLS_ID\nEOF|' oe/build.sh
 fi
 
 # Remove all builds in oe container before starting a new one
@@ -139,11 +170,7 @@ fi
 
 cd - > /dev/null
 
-if [ $CUSTOM -eq 0 ]; then
-    scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/regular/${BRANCH}/
-else
-    scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/custom/${BRANCH}/
-fi
+scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/${CUSTOM}/${BRANCH}/
 
 exit
 }
