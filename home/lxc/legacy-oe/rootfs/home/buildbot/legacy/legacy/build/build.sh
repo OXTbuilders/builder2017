@@ -78,8 +78,8 @@ cp example-config .config
 cat <<EOF >> .config
 BRANCH=$BRANCH
 NAME_SITE="${NAME_SITE}"
-OPENXT_MIRROR="http://144.217.69.51/mirror"
-OE_TARBALL_MIRROR="http://144.217.69.51/mirror/"
+OPENXT_MIRROR="http://openxt.ainfosec.com/mirror"
+OE_TARBALL_MIRROR="http://openxt.ainfosec.com/mirror/"
 OPENXT_GIT_MIRROR="/home/buildbot/legacy/legacy/build/git"
 OPENXT_GIT_PROTOCOL="file"
 REPO_PROD_CACERT="/home/buildbot/legacy/legacy/build/certs/prod-cacert.pem"
@@ -89,7 +89,7 @@ REPO_DEV_SIGNING_KEY="/home/buildbot/legacy/legacy/build/certs/dev-cakey.pem"
 WIN_BUILD_OUTPUT="$WINTOOLS"
 XC_TOOLS_BUILD=$WINTOOLS_ID
 SYNC_CACHE_OE=buildbot@172.21.152.1:/home/builds/oe/legacy
-BUILD_RSYNC_DESTINATION=builds@144.217.69.51:/home/builds/legacy
+BUILD_RSYNC_DESTINATION=builds@openxt.ainfosec.com:/home/builds/legacy
 NETBOOT_HTTP_URL=http://openxt.ainfosec.com/builds
 EOF
 

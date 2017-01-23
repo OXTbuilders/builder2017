@@ -138,9 +138,9 @@ fi
 #  TODO: replace the IP with a DNS name once we have one
 if [[ $BRANCH = stable-6* ]]; then
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to .config
-    sed -i "s|^EOF$|XENCLIENT_PACKAGE_FEED_URI=\"http://144.217.69.51/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/openxt-dev-${BUILD_ID}-${BRANCH}/packages/ipk\"\nEOF|" oe/build.sh
+    sed -i "s|^EOF$|XENCLIENT_PACKAGE_FEED_URI=\"http://openxt.ainfosec.com/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/openxt-dev-${BUILD_ID}-${BRANCH}/packages/ipk\"\nEOF|" oe/build.sh
 else
-    sed -i "s|^XENCLIENT_PACKAGE_FEED_URI=.*$|XENCLIENT_PACKAGE_FEED_URI=\"http://144.217.69.51/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/packages/ipk\"|" oe/build.sh
+    sed -i "s|^XENCLIENT_PACKAGE_FEED_URI=.*$|XENCLIENT_PACKAGE_FEED_URI=\"http://openxt.ainfosec.com/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/packages/ipk\"|" oe/build.sh
 fi
 # 6. stable-6: Bring in Windows tools and fix .config
 if [[ $BRANCH = stable-6* ]]; then
@@ -170,7 +170,7 @@ fi
 
 cd - > /dev/null
 
-scp -r ~/xt-builds/${BUILD_ID} builds@144.217.69.51:/home/builds/${CUSTOM}/${BRANCH}/
+scp -r ~/xt-builds/${BUILD_ID} builds@openxt.ainfosec.com:/home/builds/${CUSTOM}/${BRANCH}/
 
 exit
 }
