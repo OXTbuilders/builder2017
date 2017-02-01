@@ -153,6 +153,12 @@ WINTOOLS_ID="`grep -o '[0-9]*' wintools/BUILD_ID`"
 EOF
     sed -i -e 's|^EOF$|WIN_BUILD_OUTPUT=\"$WINTOOLS\"\nXC_TOOLS_BUILD=$WINTOOLS_ID\nEOF|' oe/build.sh
 fi
+# 7. All: add the mirror as a pre-mirror
+# TODO: add that to stable-6 too
+if [[ $BRANCH != stable-6* ]]; then
+    # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
+    sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* http://openxt.ainfosec.com/mirror/ \\\n https://.*/.* http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
+fi
 
 # Remove all builds in oe container before starting a new one
 echo "Removing old build(s)..."
