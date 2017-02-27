@@ -17,6 +17,15 @@
 {# this is currently just the text part of the boxes #}
 
 {% macro build_box(reason, url, number) -%}
+  {%- if   "nightly6" in reason -%}
+    <a>stable-6 nightly</a><br/>
+  {%- elif "nightly5" in reason -%}
+    <a>stable-5 nightly</a><br/>
+  {%- elif "nightly4" in reason -%}
+    <a>stable-4 nightly</a><br/>
+  {%- elif "nightly" in reason -%}
+    <a>master nightly</a><br/>
+  {%- endif -%}
   <a title="Reason: {{ reason|e }}" href="{{ url }}">Build {{ number }}</a>
 {%- endmacro %}
 
