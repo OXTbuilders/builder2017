@@ -155,7 +155,10 @@ EOF
 fi
 # 7. All: add the mirror as a pre-mirror
 # TODO: add that to stable-6 too
-if [[ $BRANCH != stable-6* ]]; then
+if [[ $BRANCH = stable-6* ]]; then
+    # Hack: there's only one EOF heredoc in oe/build.sh, which appends to .config
+    sed -i "s|^EOF$|\nOE_TARBALL_MIRROR=\"http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
+else
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
     sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* http://openxt.ainfosec.com/mirror/ \\\n https://.*/.* http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 fi
