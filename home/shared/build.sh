@@ -170,8 +170,8 @@ fi
 rm -rf /home/git/${LOCAL_USER}/openxt.jed /home/git/${LOCAL_USER}/openxt.orig
 cp -r /home/git/${LOCAL_USER}/openxt.git /home/git/${LOCAL_USER}/openxt.jed
 git remote add jed file:///home/git/${LOCAL_USER}/openxt.jed
-git --quiet -c user.name='Builder' -c user.email='nobody@openxt.ainfosec.com' commit -am 'Builder hacks'
-git --quiet push jed ${BRANCH}
+git -c user.name='Builder' -c user.email='nobody@openxt.ainfosec.com' commit --quiet -am 'Builder hacks'
+git push --quiet jed ${BRANCH}
 echo "mv /home/git/${LOCAL_USER}/openxt.git /home/git/${LOCAL_USER}/openxt.orig" >> fetch.sh
 echo "mv /home/git/${LOCAL_USER}/openxt.jed /home/git/${LOCAL_USER}/openxt.git" >> fetch.sh
 
