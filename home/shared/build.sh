@@ -67,7 +67,7 @@ rm -rf /home/git/${LOCAL_USER}/*
 
 echo "Cloning all repos..."
 for repo in `/home/shared/list_repos.sh`; do
-    git clone --quiet --mirror https://github.com/OpenXT/${repo} /home/git/${LOCAL_USER}/${repo}.git
+    git clone --quiet --bare https://github.com/OpenXT/${repo} /home/git/${LOCAL_USER}/${repo}.git
 done
 
 # Handle overrides
@@ -92,12 +92,12 @@ cd openxt/build-scripts
 
 # Modifying the build-scripts the way setup.sh would.
 # Change the following if setup.sh changes
-sed -i "s|\%CONTAINER_USER\%|build|"    build.sh
-sed -i "s|\%SUBNET_PREFIX\%|172.21|"    build.sh
+sed -i "s|\%CONTAINER_USER\%|build|" build.sh
+sed -i "s|\%SUBNET_PREFIX\%|172.21|" build.sh
 # No clean.sh in stable-6
 if [[ $BRANCH != stable-6* ]]; then
-    sed -i "s|\%CONTAINER_USER\%|build|"    clean.sh
-    sed -i "s|\%SUBNET_PREFIX\%|172.21|"    clean.sh
+    sed -i "s|\%CONTAINER_USER\%|build|" clean.sh
+    sed -i "s|\%SUBNET_PREFIX\%|172.21|" clean.sh
 fi
 sed -i "s|\%GIT_ROOT_PATH\%|/home/git|" fetch.sh
 cp ../version .
@@ -105,7 +105,7 @@ cp ../version .
 # Doing custom modifications to the scripts
 # Hopefully we can keep it to a minimum
 # 1. we just have one shared Windows VM, no per-user one
-sed -i "s|^IP=.*$|IP=windows|"          windows/build.sh
+sed -i "s|^IP=.*$|IP=windows|" windows/build.sh
 # 2. we're running in a subdir here, not in ~, tell everybody
 sed -i "s|^ALL_BUILDS_SUBDIR_NAME=|ALL_BUILDS_SUBDIR_NAME=${LOCAL_HOME}/|" oe/build.sh
 sed -i "s|^ALL_BUILDS_SUBDIR_NAME=|ALL_BUILDS_SUBDIR_NAME=${LOCAL_HOME}/|" debian/build.sh
@@ -162,6 +162,18 @@ else
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
     sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* http://openxt.ainfosec.com/mirror/ \\\n https://.*/.* http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 fi
+
+# OXT-993: we now use the build scripts from the git repo.
+#   Since we want git_heads to be correct, we push our hack to a separate repo
+#   that fetch.sh will rename once it's done creating git_heads.
+#   The name can't end with .git or it will end up in git_heads.
+rm -rf /home/git/${LOCAL_USER}/openxt.jed /home/git/${LOCAL_USER}/openxt.orig
+cp -r /home/git/${LOCAL_USER}/openxt.git /home/git/${LOCAL_USER}/openxt.jed
+git remote add jed file:///home/git/${LOCAL_USER}/openxt.jed
+git --quiet -c user.name='Builder' -c user.email='nobody@openxt.ainfosec.com' commit -am 'Builder hacks'
+git --quiet push jed ${BRANCH}
+echo "mv /home/git/${LOCAL_USER}/openxt.git /home/git/${LOCAL_USER}/openxt.orig" >> fetch.sh
+echo "mv /home/git/${LOCAL_USER}/openxt.jed /home/git/${LOCAL_USER}/openxt.git" >> fetch.sh
 
 # Remove all builds in oe container before starting a new one
 echo "Removing old build(s)..."
