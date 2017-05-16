@@ -160,7 +160,7 @@ if [[ $BRANCH = stable-6* ]]; then
     sed -i "s|^EOF$|\nOE_TARBALL_MIRROR=\"http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 else
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
-    sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* http://openxt.ainfosec.com/mirror/ \\\n https://.*/.* http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
+    sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* http://openxt.ainfosec.com/mirror/ \\\n https://.*/.* http://openxt.ainfosec.com/mirror/ \\\n ftp://.*/.* http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 fi
 
 # OXT-993: we now use the build scripts from the git repo.
