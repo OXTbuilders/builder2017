@@ -138,9 +138,9 @@ fi
 #  TODO: replace the IP with a DNS name once we have one
 if [[ $BRANCH = stable-6* ]]; then
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to .config
-    sed -i "s|^EOF$|XENCLIENT_PACKAGE_FEED_URI=\"http://openxt.ainfosec.com/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/openxt-dev-${BUILD_ID}-${BRANCH}/packages/ipk\"\nEOF|" oe/build.sh
+    sed -i "s|^EOF$|XENCLIENT_PACKAGE_FEED_URI=\"https://openxt.ainfosec.com/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/openxt-dev-${BUILD_ID}-${BRANCH}/packages/ipk\"\nEOF|" oe/build.sh
 else
-    sed -i "s|^XENCLIENT_PACKAGE_FEED_URI=.*$|XENCLIENT_PACKAGE_FEED_URI=\"http://openxt.ainfosec.com/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/packages/ipk\"|" oe/build.sh
+    sed -i "s|^XENCLIENT_PACKAGE_FEED_URI=.*$|XENCLIENT_PACKAGE_FEED_URI=\"https://openxt.ainfosec.com/builds/${CUSTOM}/${BRANCH}/${BUILD_ID}/packages/ipk\"|" oe/build.sh
 fi
 # 6. stable-6: Bring in Windows tools and fix .config
 if [[ $BRANCH = stable-6* ]]; then
@@ -157,10 +157,10 @@ fi
 # TODO: add that to stable-6 too
 if [[ $BRANCH = stable-6* ]]; then
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to .config
-    sed -i "s|^EOF$|\nOE_TARBALL_MIRROR=\"http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
+    sed -i "s|^EOF$|\nOE_TARBALL_MIRROR=\"https://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 else
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
-    sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* http://openxt.ainfosec.com/mirror/ \\\n https://.*/.* http://openxt.ainfosec.com/mirror/ \\\n ftp://.*/.* http://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
+    sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* https://openxt.ainfosec.com/mirror/ \\\n https://.*/.* https://openxt.ainfosec.com/mirror/ \\\n ftp://.*/.* https://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 fi
 
 # OXT-993: we now use the build scripts from the git repo.
