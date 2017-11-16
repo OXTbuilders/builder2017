@@ -162,6 +162,11 @@ else
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
     sed -i "s|^EOF$|\nPREMIRRORS_prepend = \"http://.*/.* https://openxt.ainfosec.com/mirror/ \\\n https://.*/.* https://openxt.ainfosec.com/mirror/ \\\n ftp://.*/.* https://openxt.ainfosec.com/mirror/\"\nEOF|" oe/build.sh
 fi
+# 8. Enable https certificates when supported
+if grep validitems ../build/conf/local.conf-dist | grep -q web-certificates; then
+    # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
+    sed -i 's|^EOF$|\nEXTRA_IMAGE_FEATURES += "web-certificates"\nEOF|' oe/build.sh
+fi
 
 # OXT-993: we now use the build scripts from the git repo.
 #   Since we want git_heads to be correct, we push our hack to a separate repo
