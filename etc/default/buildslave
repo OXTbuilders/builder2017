@@ -17,3 +17,10 @@ SLAVE_USER[2]="openxt2"               # user to run slave as
 SLAVE_BASEDIR[2]="/var/lib/buildbot/slaves/openxt2"  # basedir to slave (absolute path)
 SLAVE_OPTIONS[2]=""                   # buildbot options
 SLAVE_PREFIXCMD[2]=""                 # prefix command, i.e. nice, linux32, dchroot
+
+SLAVE_ENABLED[3]=1                    # 1-enabled, 0-disabled
+SLAVE_NAME[3]="openxt64"               # short name printed on start/stop
+SLAVE_USER[3]="openxt64"               # user to run slave as
+SLAVE_BASEDIR[3]="/var/lib/buildbot/slaves/openxt64"  # basedir to slave (absolute path)
+SLAVE_OPTIONS[3]=""                   # buildbot options
+SLAVE_PREFIXCMD[3]=""                 # prefix command, i.e. nice, linux32, dchroot
