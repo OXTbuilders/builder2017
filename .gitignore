@@ -84,6 +84,7 @@ oracle*
 .htpasswd
 /var/lib/buildbot/slaves/openxt1/openxt/build/openxt
 /var/lib/buildbot/slaves/openxt2/openxt/build/openxt
+/var/lib/buildbot/slaves/openxt64/openxt64/build/openxt
 /home/lxc/legacy-oe/rootfs/home/buildbot/legacy/legacy/build/certs
 /home/lxc/legacy-oe/rootfs/home/buildbot/legacy/legacy/build/git
 /home/lxc/legacy-oe/rootfs/home/buildbot/legacy/legacy/build/last_build
