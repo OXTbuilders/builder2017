@@ -53,7 +53,9 @@ do_overrides () {
 	    git symbolic-ref HEAD refs/heads/tmp
 	    # Move $BRANCH to a backup location (avoid removing it, since some branches can't be removed)
 	    #   Do not fail if the branch doesn't exist, it can happen
-	    git branch -m $BRANCH original$BRANCH || true
+	    if git show-ref --quiet refs/heads/$BRANCH; then
+	        git branch -m $BRANCH pleasedonthavethisalready$BRANCH
+	    fi
 	    # Create a branch named $BRANCH out of the $branch requested by the override
 	    git branch $BRANCH $branch
 	    # Make $BRANCH the head of the repository
@@ -166,6 +168,17 @@ fi
 if grep validitems ../build/conf/local.conf-dist | grep -q web-certificates; then
     # Hack: there's only one EOF heredoc in oe/build.sh, which appends to local.conf
     sed -i 's|^EOF$|\nEXTRA_IMAGE_FEATURES += "web-certificates"\nEOF|' oe/build.sh
+fi
+# 9. rsync the tarball cache of regular master builds for custom master builds
+if [[ $BRANCH = "master" ]]; then
+    if [[ $CUSTOM = "regular" ]]; then
+	# Update the local cache at the end of the build
+	sed -i "/^exit$/i rsync -a --exclude='git*' build/downloads/ ~/downloads/" oe/build.sh
+    else
+	# Grab a copy of the cache at the beginning of a build
+	# HACK: rely on the "# Build" comment
+	sed -i "/^# Build$/i mkdir -p build/downloads ; rsync -a ~/downloads/ builds/downloads/" oe/build.sh
+    fi
 fi
 
 # OXT-993: we now use the build scripts from the git repo.
