@@ -173,7 +173,7 @@ fi
 if [[ $BRANCH = "master" ]]; then
     if [[ $CUSTOM = "regular" ]]; then
 	# Update the local cache at the end of the build
-	sed -i "/^exit$/i rsync -a --exclude='git*' build/downloads/ ~/downloads/" oe/build.sh
+	sed -i "/^exit$/i rsync -a --exclude='git*' downloads/ ~/downloads/" oe/build.sh
     else
 	# Grab a copy of the cache at the beginning of a build
 	# HACK: rely on the "# Build" comment
