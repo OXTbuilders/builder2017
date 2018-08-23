@@ -177,7 +177,7 @@ if [[ $BRANCH = "master" ]]; then
     else
 	# Grab a copy of the cache at the beginning of a build
 	# HACK: rely on the "# Build" comment
-	sed -i "/^# Build$/i mkdir -p build/downloads ; rsync -a ~/downloads/ builds/downloads/" oe/build.sh
+	sed -i "/^# Build$/i mkdir -p build/downloads ; rsync -a ~/downloads/ build/downloads/" oe/build.sh
     fi
 fi
 
