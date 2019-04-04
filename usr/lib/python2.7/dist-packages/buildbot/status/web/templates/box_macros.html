@@ -17,7 +17,9 @@
 {# this is currently just the text part of the boxes #}
 
 {% macro build_box(reason, url, number) -%}
-  {%- if   "nightly8" in reason -%}
+  {%- if   "nightly9" in reason -%}
+    <a>stable-9 nightly</a><br/>
+  {%- elif "nightly8" in reason -%}
     <a>stable-8 nightly</a><br/>
   {%- elif "nightly7" in reason -%}
     <a>stable-7 nightly</a><br/>
