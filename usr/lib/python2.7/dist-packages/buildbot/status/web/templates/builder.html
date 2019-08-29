@@ -120,5 +120,15 @@
 {% endif %}
 
 </div>
+<script>
+  var varSection = window.location.search.substr(1);
+  var varArray = varSection.split("&");
+  for (var v=0; v < varArray.length; v++) {
+    var getvar = varArray[v].split("=");
+    if (typeof document.forms["force_build"][getvar[0]] != "undefined") {
+      document.forms["force_build"][getvar[0]].value = getvar[1];
+    }
+  }
+</script>
 
 {% endblock %}
